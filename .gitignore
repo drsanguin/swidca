@@ -1,7 +1,15 @@
+#project files
+
 csharp/swidca/core/App.config
 csharp/swidca/core/Properties/*
-csharp/swidca/core/bin/*
-csharp/swidca/core/core.csproj
-csharp/swidca/core/obj/*
 csharp/swidca/swidca.sln
 csharp/swidca/swidca.v12.suo
+csharp/swidca/core/core.csproj
+
+#binary files
+
+csharp/swidca/core/bin/*
+
+#temp files
+
+csharp/swidca/core/obj/*
