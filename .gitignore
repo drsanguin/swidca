@@ -5,11 +5,15 @@ csharp/swidca/core/Properties/*
 csharp/swidca/swidca.sln
 csharp/swidca/swidca.v12.suo
 csharp/swidca/core/core.csproj
+csharp/swidca/tests/Properties/*
+csharp/swidca/tests/tests.csproj
 
 #binary files
 
 csharp/swidca/core/bin/*
+csharp/swidca/tests/bin/*
 
 #temp files
 
 csharp/swidca/core/obj/*
+csharp/swidca/tests/obj/*
