@@ -56,17 +56,19 @@ namespace Fr.TPerez.Swidca.Tries
             {
                 if(word != "")
                 {
-                    this.add(word, this.root);
+                    this.add(new StringBuilder(word), this.root);
                 }
             }
+
+            Debug.WriteLine(this.ToString());
 
             sw.Stop();
             Console.WriteLine("Done ! Took {0} ms.", sw.ElapsedMilliseconds);
         }
 
-        private void add(string word, Node node)
+        private void add(StringBuilder word, Node node)
         {
-            if(word.Equals(""))
+            if(word.Length == 0)
             {
                 node.state = state.STATE_FINAL;
             }
@@ -78,7 +80,7 @@ namespace Fr.TPerez.Swidca.Tries
 
                 if(sons.ContainsKey(firstLetter))
                 {
-                    this.add(word.Substring(1), sons[firstLetter]);
+                    this.add(word.Remove(0, 1), sons[firstLetter]);
                 }
                 else
                 {
@@ -87,7 +89,7 @@ namespace Fr.TPerez.Swidca.Tries
                     this.trie.Add(newNode, new Dictionary<char, Node>());
                     sons.Add(firstLetter, newNode);
 
-                    this.add(word.Substring(1), newNode);
+                    this.add(word.Remove(0, 1), newNode);
                 }
             }
         }
@@ -102,7 +104,7 @@ namespace Fr.TPerez.Swidca.Tries
             
             Stopwatch sw = new Stopwatch();
 
-            Console.WriteLine("Computing components for all dictionary's words...");
+            Console.WriteLine("Searching components for all dictionary's words...");
             sw.Start();
 
             Parallel.ForEach<string>(this.words,
@@ -131,7 +133,7 @@ namespace Fr.TPerez.Swidca.Tries
         {
             Stopwatch sw = new Stopwatch();
 
-            Console.WriteLine("Computing components for \"{0}\"...", word);
+            Console.WriteLine("Searching components for \"{0}\"...", word);
             sw.Start();
 
             IList<IList<string>> result = new List<IList<string>>();
