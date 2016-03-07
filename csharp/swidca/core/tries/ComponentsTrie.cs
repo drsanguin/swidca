@@ -60,8 +60,6 @@ namespace Fr.TPerez.Swidca.Tries
                 }
             }
 
-            Debug.WriteLine(this.ToString());
-
             sw.Stop();
             Console.WriteLine("Done ! Took {0} ms.", sw.ElapsedMilliseconds);
         }
