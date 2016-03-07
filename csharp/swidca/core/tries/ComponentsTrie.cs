@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -34,7 +35,9 @@ namespace Fr.TPerez.Swidca.Tries
         private IDictionary<Node, IDictionary<char, Node>> trie;
         private IEnumerable<string> words;
 
-        public ComponentsTrie(string path)
+        public ComponentsTrie(Stream stream) : this(stream, new string[] { Environment.NewLine }) { }
+
+        public ComponentsTrie(Stream stream, string[] separators)
         {
             Node root = new Node(state.STATE_NONFINAL);
 
@@ -44,7 +47,7 @@ namespace Fr.TPerez.Swidca.Tries
 
             Stopwatch sw = new Stopwatch();
 
-            this.words = FileReader.Read(path);
+            this.words = DictionaryReader.ReadBySpliting(stream, separators);
 
             Console.WriteLine("Building trie...");
             sw.Start();
@@ -89,6 +92,10 @@ namespace Fr.TPerez.Swidca.Tries
             }
         }
 
+        /// <summary>
+        /// Search all the possible decompositions of all the words in the dictionary.
+        /// </summary>
+        /// <returns>A IEnumerable where each word is key who is associated to his decompositions.</returns>
         public IEnumerable<KeyValuePair<string, IEnumerable<IEnumerable<string>>>> GetComponents()
         {
             IDictionary<string, IEnumerable<IEnumerable<string>>> result = new ConcurrentDictionary<string, IEnumerable<IEnumerable<string>>>();
@@ -115,6 +122,11 @@ namespace Fr.TPerez.Swidca.Tries
             return result;
         }
 
+        /// <summary>
+        /// Search every decompositions for the specified word that are possible using only the words of the dictionary.
+        /// </summary>
+        /// <param name="word">The word that you wan to to decompose.</param>
+        /// <returns>The word's decompositions.</returns>
         public IEnumerable<IEnumerable<string>> GetComponents(string word)
         {
             Stopwatch sw = new Stopwatch();
@@ -132,10 +144,10 @@ namespace Fr.TPerez.Swidca.Tries
             return result;
         }
 
-        private void getComponents(string word, Node currentNode, IList<IList<string>> components, bool initialWord)
+        private void getComponents(string word, Node currentNode, IList<IList<string>> components, bool currentWordIsInitialWord)
         {
             StringBuilder workingCopy = new StringBuilder(word);
-            StringBuilder component = new StringBuilder("");
+            StringBuilder component = new StringBuilder();
 
             while (!component.ToString().Equals(word) && this.trie[currentNode].Count != 0)
             {
@@ -152,7 +164,7 @@ namespace Fr.TPerez.Swidca.Tries
                     {
                         string debut = component.ToString();
 
-                        if (!initialWord && workingCopy.Length == 0)
+                        if (!currentWordIsInitialWord && workingCopy.Length == 0)
                         {
                             components[0].Add(debut);
                         }
@@ -180,6 +192,10 @@ namespace Fr.TPerez.Swidca.Tries
             }
         }
 
+        /// <summary>
+        /// Convert the ComponentTrie to it's String representation. The String is formated in order to be interpreted by graphviz.
+        /// </summary>
+        /// <returns>A String that represents the ComponentTrie</returns>
         public override string ToString()
         {
             StringBuilder sb = new StringBuilder();

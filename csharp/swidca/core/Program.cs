@@ -1,6 +1,7 @@
 ﻿using Fr.TPerez.Swidca.Tries;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 
@@ -12,11 +13,13 @@ namespace core
         {
             if (args.Length == 0)
             {
-                Console.WriteLine("Use: swidca <word> <text file>");
+                Console.WriteLine("Usage: swidca WORD FILE");
             }
             else
             {
-                ComponentsTrie trie = new ComponentsTrie(args[args.Length - 1]);
+                FileStream fs = new FileStream(args[args.Length - 1], FileMode.Open);
+
+                ComponentsTrie trie = new ComponentsTrie(fs);
 
                 IEnumerable<IEnumerable<string>> components = trie.GetComponents(args[0]);
 
@@ -38,11 +41,11 @@ namespace core
                         {
                             if (pieceOfComponent.Equals(lastOne))
                             {
-                                sb.AppendFormat(" \"{0}\"", pieceOfComponent);
+                                sb.AppendFormat("\"{0}\"", pieceOfComponent);
                             }
                             else
                             {
-                                sb.AppendFormat(" \"{0}\" +", pieceOfComponent);
+                                sb.AppendFormat("\"{0}\" + ", pieceOfComponent);
                             }
                         }
 
