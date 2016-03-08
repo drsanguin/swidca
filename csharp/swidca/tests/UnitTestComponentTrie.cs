@@ -129,27 +129,50 @@ namespace Fr.TPerez.Swidca.Tests
 
             bool property = true;
 
-            IEnumerable<string> element = components.ElementAt<IEnumerable<string>>(0);
+            property = property && components.Count<IEnumerable<string>>() == 4;
 
-            property = property && element.Contains<string>("test");
-            property = property && element.Contains<string>("ament");
+            bool foundComposition1 = false;
+            bool foundComposition2 = false;
+            bool foundComposition3 = false;
+            bool foundComposition4 = false;
 
-            element = components.ElementAt<IEnumerable<string>>(1);
+            foreach (IEnumerable<string> component in components)
+            {
+                if (component.Count<string>() == 2)
+                {
+                    if (component.Contains<string>("testa") && !foundComposition1)
+                    {
+                        property = property && component.Contains<string>("ment");
 
-            property = property && element.Contains<string>("test");
-            property = property && element.Contains<string>("am");
-            property = property && element.Contains<string>("ent");
+                        foundComposition1 = true;
+                    }
+                    else if (component.Contains<string>("test") && !foundComposition2)
+                    {
+                        property = property && component.Contains<string>("ament");
 
-            element = components.ElementAt<IEnumerable<string>>(2);
+                        foundComposition2 = true;
+                    }
+                }
+                else
+                {
+                    property = property && component.Count<string>() == 3;
 
-            property = property && element.Contains<string>("testa");
-            property = property && element.Contains<string>("ment");
+                    if (component.Contains<string>("testa") && !foundComposition3)
+                    {
+                        property = property && component.Contains<string>("m") && component.Contains<string>("ent");
 
-            element = components.ElementAt<IEnumerable<string>>(3);
+                        foundComposition3 = true;
+                    }
+                    else if (component.Contains<string>("test") && !foundComposition4)
+                    {
+                        property = property && component.Contains<string>("am") && component.Contains<string>("ent");
 
-            property = property && element.Contains<string>("testa");
-            property = property && element.Contains<string>("m");
-            property = property && element.Contains<string>("ent");
+                        foundComposition4 = true;
+                    }
+                }
+            }
+
+            property = property && foundComposition1 && foundComposition2 && foundComposition3 && foundComposition4;
 
             Assert.IsTrue(property);
         }
