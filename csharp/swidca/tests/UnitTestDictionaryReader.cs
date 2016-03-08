@@ -15,9 +15,6 @@ namespace Fr.TPerez.Swidca.Tests
         private static Stream dictionaryStream;
         private static Stream toSplitDictionaryStream;
 
-        private static string testament_dictionary = "Fr.TPerez.Swidca.Tests.ressources.testament_dictionary.txt";
-        private static string testament_dictionary_to_split = "Fr.TPerez.Swidca.Tests.ressources.testament_dictionary_to_split.txt";
-
         [ClassInitialize]
         public static void Init(TestContext context)
         {
@@ -27,8 +24,8 @@ namespace Fr.TPerez.Swidca.Tests
         [TestInitialize]
         public void TestInitialize()
         {
-            UnitTestDictionaryReader.dictionaryStream = UnitTestDictionaryReader.assembly.GetManifestResourceStream(UnitTestDictionaryReader.testament_dictionary);
-            UnitTestDictionaryReader.toSplitDictionaryStream = UnitTestDictionaryReader.assembly.GetManifestResourceStream(UnitTestDictionaryReader.testament_dictionary_to_split);
+            UnitTestDictionaryReader.dictionaryStream = UnitTestDictionaryReader.assembly.GetManifestResourceStream("Fr.TPerez.Swidca.Tests.ressources.testament_dictionary.txt");
+            UnitTestDictionaryReader.toSplitDictionaryStream = UnitTestDictionaryReader.assembly.GetManifestResourceStream("Fr.TPerez.Swidca.Tests.ressources.testament_dictionary_to_split.txt");
         }
 
         [TestCleanup]

@@ -9,11 +9,19 @@ using System.Threading.Tasks;
 
 namespace Fr.TPerez.Swidca.Tries
 {
+    /// <summary>
+    /// A Trie where each node map to another with a letter.
+    /// If the path from the root to a node is a word, the node is flaged a Final.
+    /// So each first level final node will map a 1 letter world, each 2nd level map a 2 words letter and so on.
+    /// </summary>
     public class ComponentsTrie
     {
         private enum state { STATE_NONFINAL, STATE_FINAL };
         private static int nodeCount = 0;
 
+        /// <summary>
+        /// The Node class for ComponentTrie's node modeling.
+        /// </summary>
         private class Node
         {
             public state state;
@@ -64,6 +72,11 @@ namespace Fr.TPerez.Swidca.Tries
             Console.WriteLine("Done ! Took {0} ms.", sw.ElapsedMilliseconds);
         }
 
+        /// <summary>
+        /// Tail-recursive function who add a word to the Trie. Does nothing if the Trie already contains the word.
+        /// </summary>
+        /// <param name="word">The word to add to the Trie.</param>
+        /// <param name="node">The current node during the traversal.</param>
         private void add(StringBuilder word, Node node)
         {
             if(word.Length == 0)
@@ -144,22 +157,36 @@ namespace Fr.TPerez.Swidca.Tries
             return result;
         }
 
+        /// <summary>
+        /// Auxiliary function of the GetComponents function.
+        /// </summary>
+        /// <param name="word">The word for wich we want to find components.</param>
+        /// <param name="currentNode">The current node during the traversal.</param>
+        /// <param name="components">The accumulator where the result is stored.</param>
+        /// <param name="currentWordIsInitialWord">A flag used to detect if the parameter word is equal to word. Used to avoid adding the word to the result.</param>
         private void getComponents(string word, Node currentNode, IList<IList<string>> components, bool currentWordIsInitialWord)
         {
+            /// The copy of the word that will be modified during the loop
             StringBuilder workingCopy = new StringBuilder(word);
+            /// The current component of the word that will be construct during the loop
             StringBuilder component = new StringBuilder();
 
+            /// Loop until the word is totaly consume or we've reach a root.
             while (!component.ToString().Equals(word) && this.trie[currentNode].Count != 0)
             {
+                /// Getting the current char we search in the current node's sons
                 char character = workingCopy[0];
 
+                /// Updating copy and components with the current char
                 workingCopy.Remove(0, 1);
                 component.Append(character);
 
+                /// We can continue our traversal
                 if (this.trie[currentNode].ContainsKey(character))
                 {
                     currentNode = this.trie[currentNode][character];
 
+                    /// We've reach a leaf
                     if (currentNode.IsFinal() && this.trie[currentNode].Count == 0)
                     {
                         string debut = component.ToString();
@@ -169,16 +196,20 @@ namespace Fr.TPerez.Swidca.Tries
                             components[0].Add(debut);
                         }
                     }
+                    /// We've reach a node who's traversal from the root from him is a word of the dictionary.
                     else if (currentNode.IsFinal())
                     {
                         IList<IList<string>> subComponents = new List<IList<string>>();
                         subComponents.Add(new List<string>());
 
+                        /// A first component of the word
                         string debut = component.ToString();
+                        /// The rest of the word for wich we're gonna try to find components
                         string rest = workingCopy.ToString();
 
                         getComponents(rest, this.root, subComponents, false);
 
+                        /// If we've found components for the rest of the word, we add them to the result.
                         if (subComponents[0].Count > 0)
                         {
                             foreach (List<string> subComponent in subComponents)
